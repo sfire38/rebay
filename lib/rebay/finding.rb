@@ -17,6 +17,18 @@ module Rebay
       end
       return response
     end
+
+    #http://developer.ebay.com/DevZone/finding/CallRef/findCompletedItems.html
+    def find_completed_items(params)
+      raise ArgumentError unless params[:keywords] or params[:categoryId]
+      response = get_json_response(build_request_url('findCompletedItems', params))
+      response.trim(:findItemsAdvancedResponse)
+      
+      if response.response.has_key?('searchResult') && response.response['searchResult'].has_key?('item')
+        response.results = response.response['searchResult']['item']
+      end
+      return response
+    end
   
     #http://developer.ebay.com/DevZone/finding/CallRef/findItemsByCategory.html
     def find_items_by_category(params)
